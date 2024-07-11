@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,10 @@ public class LeaderboardController {
     public List<PlayerDTO> getPlayers() {
         List<Player> players = getPlayersService.invoke();
 
+        // Sort players in decreasing order of score
+        players.sort(Comparator.comparingInt(Player::getScore).reversed());
+
+        // Map to PlayerDTO and collect into a list
         return players.stream()
                 .map(player -> new PlayerDTO(player.getName(), player.getScore()))
                 .collect(Collectors.toList());

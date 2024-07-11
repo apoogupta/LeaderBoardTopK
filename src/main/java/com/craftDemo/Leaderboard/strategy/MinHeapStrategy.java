@@ -6,28 +6,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 
 public class MinHeapStrategy implements GetTopKStrategy {
 
-    private final PriorityQueue<Player> topPlayers;
-    private final RedisCacheService redisCacheService;
+    private PriorityQueue<Player> topPlayers;
+
+    @Autowired
+    private RedisCacheService redisCacheService;
 
     @Value("${playerCount}")
     private int k;
 
     @Autowired
-    public MinHeapStrategy(RedisCacheService redisCacheService) {
+    public MinHeapStrategy() {
         this.topPlayers = new PriorityQueue<>(Comparator.comparing(Player::getScore));
-        this.redisCacheService = redisCacheService;
     }
 
     @Override
     public void addPlayer(Player player) {
+
+        //if we have our top k players and new player comes with same score , ignore that player
+        Player minScorePlayer = topPlayers.peek();
+        if(topPlayers.size() == k && minScorePlayer.getScore() >= player.getScore())
+            return;
+
         topPlayers.add(player);
         if (topPlayers.size() > k) {
             removePlayer();

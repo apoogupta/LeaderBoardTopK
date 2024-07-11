@@ -14,18 +14,13 @@ public class AppConfig {
     @Bean
     @Qualifier("minHeapStrategy")
     public GetTopKStrategy minHeapStrategy() {
-        return new MinHeapStrategy(redisCacheService());
+        return new MinHeapStrategy();
     }
 
     @Bean
     @Qualifier("countMinSketchStrategy")
     public GetTopKStrategy countMinSketchStrategy() {
         return new CountMinSketchStrategy();
-    }
-
-    @Bean
-    public RedisCacheService redisCacheService() {
-        return new RedisCacheService(); 
     }
 
 }
