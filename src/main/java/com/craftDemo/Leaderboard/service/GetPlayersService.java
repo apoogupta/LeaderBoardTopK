@@ -30,6 +30,8 @@ public class GetPlayersService {
 
     public List<Player> invoke() {
         List<Player> playersList = getTopKStrategy.getPlayers();
+
+        if(playersList != null)
         log.info("Number of Players received: {}", playersList.size());
 
         if (playersList == null || playersList.isEmpty()) {
